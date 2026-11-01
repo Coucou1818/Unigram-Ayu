@@ -22,10 +22,13 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitCommitId: '139f2e53438b1529e178f6295bc563f4e0de734f'
+      - name: Clone and Bootstrap vcpkg
+        shell: pwsh
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git ../vcpkg
+          cd ../vcpkg
+          git checkout c3867e714dd3a51c272826eea77267876517ed99
+          .\bootstrap-vcpkg.bat -disableMetrics
 
       - name: Setup App Credentials
         shell: pwsh
