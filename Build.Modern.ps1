@@ -115,6 +115,7 @@ $solution = Join-Path $PSScriptRoot 'Telegram.Modern.slnx'
 # silently. The build then fails on the CppWinRT .props it imports by path, telling you to run a
 # restore you just ran. Restoring both kinds costs nothing once the packages are there.
 $common = @("-p:Configuration=$Configuration", '-p:RestorePackagesConfig=true',
+            '-p:WindowsTargetPlatformVersion=10.0.22621.0',
             '-nologo', '-verbosity:minimal', '-m')
 
 # The last platform in AppxBundlePlatforms is the one the packaging targets treat as producing the
