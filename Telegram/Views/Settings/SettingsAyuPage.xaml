@@ -1,0 +1,95 @@
+<Page
+    x:Class="Telegram.Views.Settings.SettingsAyuPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Telegram.Controls"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <ScrollViewer Padding="24,12,24,24">
+            <StackPanel Spacing="16" MaxWidth="720" HorizontalAlignment="Stretch">
+                
+                <!-- 页面主标题 -->
+                <TextBlock Text="Prism / Ayu 增强功能" Style="{StaticResource TitleTextBlockStyle}" FontWeight="SemiBold" Margin="0,8,0,8" />
+
+                <!-- 1. 幽灵模式卡片组 -->
+                <controls:SettingsExpander Header="幽灵模式 (Ghost Mode)" Description="在浏览对话时不向任何人泄露在线与已读状态" IsExpanded="True">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard Header="开启全局隐身模式">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.GhostModeActive, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="发送消息已读确认" Description="关闭后，你在会话内阅读任何消息，对方都不会显示双勾已读">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.SendReadMessages, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="无痕浏览故事 (Stories)" Description="关闭后，浏览他人的动态故事不会在对方访客列表中留下记录">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.SendReadStories, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="广播在线状态 (Online Packets)" Description="关闭后，你的状态永远保持为最近上线时间">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.SendOnlinePackets, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="广播正在输入状态 (Typing Action)" Description="关闭后，打字或上传媒体文件时不会提示给对方">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.SendUploadProgress, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+                <!-- 2. 防撤回与编辑记录卡片组 -->
+                <controls:SettingsExpander Header="防撤回与历史追踪 (Anti-Recall)" Description="保留被撤回的消息及编辑修改前的原始版本" IsExpanded="True">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard Header="保存被撤回的消息">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.SaveDeletedMessages, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="被撤回消息半透明显示">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.SemiTransparentDeletedMessages, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="保存消息编辑历史记录">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.SaveMessagesHistory, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+                <!-- 3. 本地会员特权与去广告 -->
+                <controls:SettingsExpander Header="本地特权与界面净化 (Privileges)" Description="解锁本地播放限制与广告屏蔽" IsExpanded="True">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard Header="解锁本地 Premium 特权" Description="在本地解除会员大贴纸/大表情限制与专属标记">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.LocalPremium, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="屏蔽频道赞助广告 (Disable Ads)" Description="彻底净化频道底部所有的赞助推荐广告">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.DisableAds, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="主播隐私防窥模式 (Streamer Mode)" Description="在界面上模糊并隐藏账号电话号码与内部 ID">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.StreamerMode, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+                <!-- 4. 多引擎翻译增强 -->
+                <controls:SettingsExpander Header="消息翻译引擎 (Translation Provider)" Description="自定义消息翻译提供商，突破官方限制" IsExpanded="True">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard Header="翻译服务提供商" Description="支持 Google、Yandex、微软 Bing 及 OpenAI 兼容大模型">
+                            <ComboBox SelectedIndex="{x:Bind ProviderSelectedIndex, Mode=TwoWay}" Width="160">
+                                <ComboBoxItem Content="Telegram 官方" />
+                                <ComboBoxItem Content="Google 翻译 (免费免Key)" />
+                                <ComboBoxItem Content="Yandex 翻译" />
+                                <ComboBoxItem Content="微软 Bing / Edge" />
+                                <ComboBoxItem Content="OpenAI 兼容接口" />
+                            </ComboBox>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="OpenAI Base URL" Description="例如 https://ai.zcr521.top/v1">
+                            <TextBox Text="{x:Bind ViewModel.OpenAIBaseUrl, Mode=TwoWay}" Width="260" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="OpenAI API Key">
+                            <PasswordBox Password="{x:Bind ViewModel.OpenAIApiKey, Mode=TwoWay}" Width="260" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="模型名称 (Model)" Description="例如 gpt-4o-mini 或 deepseek-chat">
+                            <TextBox Text="{x:Bind ViewModel.OpenAIModel, Mode=TwoWay}" Width="260" />
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

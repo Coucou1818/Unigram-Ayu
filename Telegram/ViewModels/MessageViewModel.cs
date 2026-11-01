@@ -83,6 +83,15 @@ namespace Telegram.ViewModels
             ?? _directMessagesChatTopic?.LastReadOutboxMessageId
             ?? Chat.LastReadOutboxMessageId;
 
+        // [PrismGram/AyuGram] 消息被删除状态判定
+        public bool IsDeleted => Telegram.Services.Ayu.AyuMessageTracker.IsMessageDeleted(ChatId, Id);
+
+        // [PrismGram/AyuGram] 气泡半透明度（被撤回消息透明度）
+        public double DeletedOpacity => (IsDeleted && Telegram.Services.Ayu.AyuSettings.Current.SemiTransparentDeletedMessages) ? 0.65 : 1.0;
+
+        // [PrismGram/AyuGram] 是否拥有历史编辑记录
+        public bool HasEditHistory => Telegram.Services.Ayu.AyuMessageTracker.GetEditHistory(ChatId, Id).Count > 0;
+
         //public void Cleanup()
         //{
         //    _playbackService = null;

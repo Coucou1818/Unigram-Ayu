@@ -295,6 +295,9 @@ namespace Telegram.Controls.Messages
                 UpdateMessageReplyMarkup(message);
 
                 UpdateAttach(message);
+
+                // [PrismGram/AyuGram] 动态响应消息被撤回半透明视觉渲染
+                this.Opacity = message.DeletedOpacity;
             }
 
             if (_highlight != null)

@@ -479,6 +479,12 @@ namespace Telegram.Services
 
         public void ViewMessages(long chatId, MessageTopic topicId, Vector<long> messageIds, MessageSource source, bool forceRead)
         {
+            // [PrismGram/AyuGram] 幽灵模式拦截：如果不允许发送已读且非手动强制标记，直接静默拦截
+            if (Telegram.Services.Ayu.AyuSettings.Current.GhostModeActive && !Telegram.Services.Ayu.AyuSettings.Current.SendReadMessages && !forceRead)
+            {
+                return;
+            }
+
             Send(new ViewMessages(chatId, messageIds, source, forceRead));
 
             if (source is MessageSourceForumTopicHistory && topicId is MessageTopicForum forumTopic && _forums.TryGetValue(chatId, out ForumTopicService manager))
@@ -4552,6 +4558,16 @@ namespace Telegram.Services
                     UpdateForumTopic(updateNewMessage.Message.ChatId, false, manager => manager.UpdateNewMessage(updateNewMessage.Message));
                     break;
                 case UpdateDeleteMessages updateDeleteMessages:
+                    // [PrismGram/AyuGram] 消息防撤回核心逻辑：标记被撤回消息并拦截删除事件下发
+                    if (Telegram.Services.Ayu.AyuSettings.Current.SaveDeletedMessages && updateDeleteMessages.IsPermanent)
+                    {
+                        foreach (var msgId in updateDeleteMessages.MessageIds)
+                        {
+                            Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(updateDeleteMessages.ChatId, msgId);
+                        }
+                        // 阻止向下广播删除事件，使 UI 树和会话中的消息不被销毁
+                        return;
+                    }
                     UpdateChatLastMessage(updateDeleteMessages);
                     UpdateForumTopic(updateDeleteMessages.ChatId, false, manager => manager.UpdateDeleteMessages(updateDeleteMessages.MessageIds, updateDeleteMessages.IsPermanent, updateDeleteMessages.FromCache));
                     break;
@@ -4564,6 +4580,15 @@ namespace Telegram.Services
                     UpdateForumTopic(updateMessageSendFailed.Message.ChatId, false, manager => manager.UpdateMessageSendFailed(updateMessageSendFailed.Message, updateMessageSendFailed.OldMessageId, updateMessageSendFailed.Error));
                     break;
                 case UpdateMessageContent updateMessageContent:
+                    // [PrismGram/AyuGram] 消息编辑历史追踪：记录编辑前的内容
+                    if (Telegram.Services.Ayu.AyuSettings.Current.SaveMessagesHistory)
+                    {
+                        var oldMsg = GetMessage(updateMessageContent.ChatId, updateMessageContent.MessageId);
+                        if (oldMsg != null && oldMsg.Content != null)
+                        {
+                            Telegram.Services.Ayu.AyuMessageTracker.RecordEdit(updateMessageContent.ChatId, updateMessageContent.MessageId, oldMsg.EditDate, oldMsg.Content);
+                        }
+                    }
                     UpdateForumTopic(updateMessageContent.ChatId, false, manager => manager.UpdateMessageContent(updateMessageContent.MessageId, updateMessageContent.NewContent));
                     break;
                 case UpdateMessageEdited updateMessageEdited:

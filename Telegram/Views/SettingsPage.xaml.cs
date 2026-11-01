@@ -187,6 +187,11 @@ namespace Telegram.Views
             Navigate(typeof(SettingsAdvancedPage));
         }
 
+        private void PrismAyu_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate(typeof(Settings.SettingsAyuPage));
+        }
+
         private void Questions_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.NavigationService.NavigateToInstant(Strings.TelegramFaqUrl);

@@ -1,0 +1,58 @@
+name: Build Unigram with Prism/Ayu Features
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ develop, main ]
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: '139f2e53438b1529e178f6295bc563f4e0de734f'
+
+      - name: Setup App Credentials
+        shell: pwsh
+        run: |
+          $content = @"
+          namespace Telegram
+          {
+              public static partial class Constants
+              {
+                  static Constants()
+                  {
+                      ApiId = 2496;
+                      ApiHash = "8da85b0d5b160236f12d7352725501ea";
+                      AppChannel = "unigramapp";
+                  }
+              }
+          }
+          "@
+          Set-Content -Path "Telegram/Constants.Secret.cs" -Value $content
+
+      - name: Build Modern Release Package
+        shell: pwsh
+        run: |
+          .\Build.Modern.ps1 -Platform x64 -Configuration Release -Mode SideloadOnly
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Unigram-PrismAyu-Package
+          path: Telegram/AppPackages/**/*.msixbundle

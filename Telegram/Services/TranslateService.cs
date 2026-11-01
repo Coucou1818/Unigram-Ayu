@@ -214,6 +214,48 @@ namespace Telegram.Services
             {
                 message.TranslatedText = new MessageTranslateResultPending();
 
+                // [PrismGram/AyuGram] 自定义翻译引擎分支 (Google, Yandex, 微软, OpenAI 兼容)
+                var currentProvider = Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider;
+                if (currentProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram)
+                {
+                    _translations[key] = new TranslatedMessage(toLanguage, null);
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var translatedStr = await Telegram.Services.Ayu.AyuTranslationEngine.TranslateAsync(text, toLanguage);
+                            MessageTranslateResult customResult;
+                            if (!string.IsNullOrWhiteSpace(translatedStr))
+                            {
+                                var ft = new FormattedText(translatedStr, null);
+                                ft = ClientEx.MergeEntities(ft, ClientEx.GetTextEntities(translatedStr));
+                                var styled = TextStyleRun.GetText(ft);
+                                customResult = new MessageTranslateResultText(toLanguage, styled);
+                            }
+                            else
+                            {
+                                customResult = new MessageTranslateResultError();
+                            }
+
+                            _translations[key] = new TranslatedMessage(toLanguage, customResult);
+
+                            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                                Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                                {
+                                    if (message.TranslatedText is MessageTranslateResultPending)
+                                    {
+                                        message.TranslatedText = customResult;
+                                    }
+                                });
+                        }
+                        catch
+                        {
+                            _translations[key] = new TranslatedMessage(toLanguage, new MessageTranslateResultError());
+                        }
+                    });
+                    return true;
+                }
+
                 Function function = message.Content is MessageRichMessage
                     ? new TranslateMessageRichMessage(message.ChatId, message.Id, toLanguage, string.Empty)
                     : new TranslateMessageText(message.ChatId, message.Id, toLanguage, string.Empty);

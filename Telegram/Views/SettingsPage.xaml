@@ -341,6 +341,15 @@
                             <icons:Advanced />
                         </controls:SettingsButton.IconSource>
                     </controls:SettingsButton>
+                    <!-- [PrismGram/AyuGram] 移植专有设置入口 -->
+                    <controls:SettingsButton x:Name="PrismAyu"
+                                             Click="PrismAyu_Click"
+                                             Content="Prism / Ayu 设置"
+                                             Style="{StaticResource IconBadgeButtonStyle}">
+                        <controls:SettingsButton.IconSource>
+                            <icons:StarFilled />
+                        </controls:SettingsButton.IconSource>
+                    </controls:SettingsButton>
                 </controls:TopNavView>
 
                 <StackPanel x:Name="PremiumRoot"
