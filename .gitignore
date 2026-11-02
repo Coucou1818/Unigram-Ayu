@@ -282,8 +282,8 @@ _Pvt_Extensions
 /Telegram2
 /Libraries/tdjson/td_api.tl
 /Libraries/tdjson/build-*/
-/Libraries/tdjson/*-uwp/
-/Libraries/tdjson/*-windows/
+#/Libraries/tdjson/*-uwp/
+#/Libraries/tdjson/*-windows/
 /.claude/settings.local.json.bak
 
 # vcpkg manifest mode installs here
