@@ -802,9 +802,6 @@
                 <chats:ChatActionBarView x:Name="ActionBar"
                                          Visibility="Collapsed"
                                          Canvas.ZIndex="1" />
-                <chats:ChatTranslateBar x:Name="TranslateHeader"
-                                        Visibility="Collapsed"
-                                        Canvas.ZIndex="1" />
                 <chats:ChatConnectedBotHeader x:Name="ConnectedBot"
                                               Visibility="Collapsed"
                                               Canvas.ZIndex="1" />
@@ -812,6 +809,9 @@
                                          Click="Reply_Click"
                                          Visibility="Collapsed"
                                          Canvas.ZIndex="1" />
+                <chats:ChatTranslateBar x:Name="TranslateHeader"
+                                        Visibility="Collapsed"
+                                        Canvas.ZIndex="1" />
 
                 <chats:ChatAccountInfoHeader x:Name="AccountInfoHeader"
                                              Visibility="Collapsed"

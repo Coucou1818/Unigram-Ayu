@@ -187,7 +187,8 @@ namespace Telegram.Controls.Chats
 
         private void Translate_Click(object sender, RoutedEventArgs e)
         {
-            ShowHideOriginal(ViewModel.TranslateChat());
+            var res = ViewModel.TranslateChat();
+            ShowHideOriginal(res);
         }
 
         private void Hide_Click(object sender, RoutedEventArgs e)

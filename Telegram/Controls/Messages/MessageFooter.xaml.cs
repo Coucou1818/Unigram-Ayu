@@ -313,9 +313,8 @@ namespace Telegram.Controls.Messages
             }
             else if (message.ImportInfo != null)
             {
-                var original = Formatter.ToLocalTime(message.ImportInfo.Date);
-                var date = Formatter.Date(original);
-                var time = Formatter.Time(original);
+                var date = Formatter.Date(message.Date);
+                var time = Formatter.Time(message.Date);
 
                 _dateLabel = string.Format("{0}, {1} {2} {3}", date, time, "Imported", Formatter.Time(message.Date));
             }
@@ -327,16 +326,16 @@ namespace Telegram.Controls.Messages
                 {
                     _dateLabel = string.Format("{1} {2}, {0}", _dateLabel, Icons.Premium, Formatter.ShortNumber(message.PaidMessageStarCount));
                 }
-
-                // [PrismGram/AyuGram] 被撤回消息显示专属扫帚/自定义标记 (例如 🧹 12:34)
-                if (message.IsDeleted)
-                {
-                    _dateLabel = $"{Telegram.Services.Ayu.AyuSettings.Current.DeletedMark} {_dateLabel}";
-                }
             }
             else
             {
                 _dateLabel = string.Empty;
+            }
+
+            // [PrismGram/AyuGram] 被撤回消息显示专属扫帚/自定义标记 (例如 🧹 12:34)
+            if (message.IsDeleted)
+            {
+                _dateLabel = $"{Telegram.Services.Ayu.AyuSettings.Current.DeletedMark} {_dateLabel}".Trim();
             }
         }
 

@@ -134,6 +134,11 @@ namespace Telegram.Services
                 ? ClientService.TranslateMessages
                 : ClientService.TranslateChats;
 
+            if (entireChat && Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram)
+            {
+                allowed = true;
+            }
+
             if (string.IsNullOrEmpty(language) || !allowed)
             {
                 return false;

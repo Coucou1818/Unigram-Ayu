@@ -293,17 +293,11 @@ namespace Telegram.ViewModels
 
         public bool TranslateChat()
         {
-            if (HasAutomaticTranslation())
-            {
-                IsTranslating = !_isTranslating;
-            }
-            else
-            {
-                IsTranslating = false;
-                NavigationService.ShowPromo(new PremiumSourceFeature(new PremiumFeatureRealTimeChatTranslation()));
-            }
-
-            return IsTranslating;
+            // [PrismGram/AyuGram] 切换翻译状态并立即触发界面所有可见消息的翻译请求
+            _isTranslating = !_isTranslating;
+            Settings.Chats[ChatId, TopicId, ChatSetting.IsTranslating] = _isTranslating;
+            UpdateChatIsTranslatable();
+            return _isTranslating;
         }
     }
 }
