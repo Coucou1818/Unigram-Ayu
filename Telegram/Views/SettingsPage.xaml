@@ -347,7 +347,7 @@
                                              Content="Prism / Ayu 设置"
                                              Style="{StaticResource IconBadgeButtonStyle}">
                         <controls:SettingsButton.IconSource>
-                            <icons:StarFilled />
+                            <icons:Premium />
                         </controls:SettingsButton.IconSource>
                     </controls:SettingsButton>
                 </controls:TopNavView>
