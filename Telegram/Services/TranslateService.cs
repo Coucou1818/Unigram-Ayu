@@ -237,9 +237,8 @@ namespace Telegram.Services
                             MessageTranslateResult customResult;
                             if (!string.IsNullOrWhiteSpace(translatedStr))
                             {
-                                var ft = new FormattedText(translatedStr, null);
-                                ft = ClientEx.MergeEntities(ft, ClientEx.GetTextEntities(translatedStr));
-                                var styled = TextStyleRun.GetText(ft);
+                                var entities = ClientEx.GetTextEntities(translatedStr);
+                                var styled = TextStyleRun.GetText(translatedStr, entities);
                                 customResult = new MessageTranslateResultText(toLanguage, styled);
                             }
                             else
@@ -252,9 +251,13 @@ namespace Telegram.Services
                             message.TranslatedText = customResult;
                             Aggregator.Publish(new UpdateMessageTranslatedText(message.ChatId, message.Id, customResult));
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            _translations[key] = new TranslatedMessage(toLanguage, new MessageTranslateResultError());
+                            System.Diagnostics.Debug.WriteLine($"[TranslateService] Error: {ex}");
+                            var errResult = new MessageTranslateResultError();
+                            _translations[key] = new TranslatedMessage(toLanguage, errResult);
+                            message.TranslatedText = errResult;
+                            Aggregator.Publish(new UpdateMessageTranslatedText(message.ChatId, message.Id, errResult));
                         }
                     });
                     return true;
