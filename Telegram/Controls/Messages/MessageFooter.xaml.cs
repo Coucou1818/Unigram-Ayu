@@ -332,10 +332,10 @@ namespace Telegram.Controls.Messages
                 _dateLabel = string.Empty;
             }
 
-            // [PrismGram/AyuGram] 被撤回消息显示专属扫帚/自定义标记 (例如 🧹 12:34)
+            // [PrismGram/AyuGram] 被撤回消息显示专属红色垃圾箱标记 (例如 🗑 12:34)
             if (message.IsDeleted)
             {
-                _dateLabel = $"{Telegram.Services.Ayu.AyuSettings.Current.DeletedMark} {_dateLabel}".Trim();
+                _dateLabel = $"🗑 {_dateLabel}".Trim();
             }
         }
 

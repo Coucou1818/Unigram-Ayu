@@ -4558,15 +4558,13 @@ namespace Telegram.Services
                     UpdateForumTopic(updateNewMessage.Message.ChatId, false, manager => manager.UpdateNewMessage(updateNewMessage.Message));
                     break;
                 case UpdateDeleteMessages updateDeleteMessages:
-                    // [PrismGram/AyuGram] 消息防撤回核心逻辑：标记被撤回消息并拦截删除事件下发
+                    // [PrismGram/AyuGram] 消息防撤回核心逻辑：标记被撤回消息并持久化
                     if (Telegram.Services.Ayu.AyuSettings.Current.SaveDeletedMessages && updateDeleteMessages.IsPermanent)
                     {
                         foreach (var msgId in updateDeleteMessages.MessageIds)
                         {
                             Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(updateDeleteMessages.ChatId, msgId);
                         }
-                        // 阻止向下广播删除事件，使 UI 树和会话中的消息不被销毁
-                        return;
                     }
                     UpdateChatLastMessage(updateDeleteMessages);
                     UpdateForumTopic(updateDeleteMessages.ChatId, false, manager => manager.UpdateDeleteMessages(updateDeleteMessages.MessageIds, updateDeleteMessages.IsPermanent, updateDeleteMessages.FromCache));

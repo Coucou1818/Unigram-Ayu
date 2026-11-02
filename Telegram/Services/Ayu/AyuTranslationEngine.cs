@@ -72,25 +72,51 @@ namespace Telegram.Services.Ayu
         private static async Task<string> TranslateGoogleAsync(string text, string targetLang)
         {
             string lang = NormalizeLangCode(targetLang, "zh-CN");
-            string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={Uri.EscapeDataString(lang)}&dt=t&q={Uri.EscapeDataString(text)}";
+            string url = $"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl={Uri.EscapeDataString(lang)}&q={Uri.EscapeDataString(text)}";
 
-            var response = await _httpClient.GetStringAsync(url);
-            using var doc = JsonDocument.Parse(response);
-            var root = doc.RootElement;
-
-            if (root.ValueKind == JsonValueKind.Array && root.GetArrayLength() > 0)
+            try
             {
-                var sentences = root[0];
-                var sb = new StringBuilder();
-                foreach (var s in sentences.EnumerateArray())
+                var response = await _httpClient.GetStringAsync(url);
+                using var doc = JsonDocument.Parse(response);
+                var root = doc.RootElement;
+
+                if (root.ValueKind == JsonValueKind.Array && root.GetArrayLength() > 0)
                 {
-                    if (s.ValueKind == JsonValueKind.Array && s.GetArrayLength() > 0)
+                    var sb = new StringBuilder();
+                    foreach (var item in root.EnumerateArray())
                     {
-                        sb.Append(s[0].GetString());
+                        if (item.ValueKind == JsonValueKind.Array && item.GetArrayLength() > 0)
+                        {
+                            var s = item[0].GetString();
+                            if (!string.IsNullOrEmpty(s)) sb.Append(s);
+                        }
+                        else if (item.ValueKind == JsonValueKind.String)
+                        {
+                            sb.Append(item.GetString());
+                        }
                     }
+                    if (sb.Length > 0) return sb.ToString();
                 }
-                return sb.ToString();
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AyuTranslationEngine] Google error: {ex.Message}");
+            }
+
+            // 备用：MyMemory 免费全球翻译接口
+            try
+            {
+                string myMemoryUrl = $"https://api.mymemory.translated.net/get?q={Uri.EscapeDataString(text)}&langpair=auto|{Uri.EscapeDataString(lang)}";
+                var myMemResp = await _httpClient.GetStringAsync(myMemoryUrl);
+                using var memDoc = JsonDocument.Parse(myMemResp);
+                if (memDoc.RootElement.TryGetProperty("responseData", out var respData) && respData.TryGetProperty("translatedText", out var transText))
+                {
+                    var res = transText.GetString();
+                    if (!string.IsNullOrWhiteSpace(res)) return res;
+                }
+            }
+            catch { }
+
             return text;
         }
 

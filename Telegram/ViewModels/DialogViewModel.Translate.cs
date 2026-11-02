@@ -30,12 +30,12 @@ namespace Telegram.ViewModels
 
         public bool IsLanguageDetected => _languageDetected != null && _languageDetected != "und";
 
-        public bool CanTranslate => _chat.IsTranslatable && (TranslateService.CanTranslate(_languageDetected, true) || Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram);
+        public bool CanTranslate => true;
 
         private bool _isTranslating;
         public bool IsTranslating
         {
-            get => _isTranslating && CanTranslate && HasAutomaticTranslation();
+            get => _isTranslating;
             set => SetTranslating(value);
         }
 
@@ -173,8 +173,12 @@ namespace Telegram.ViewModels
         {
             Delegate?.UpdateChatIsTranslatable(_chat, _languageDetected);
 
-            var translating = IsTranslating;
+            var translating = _isTranslating;
             var translateTo = Settings.Translate.To;
+            if (string.IsNullOrEmpty(translateTo))
+            {
+                translateTo = "zh-hans";
+            }
 
             void TranslateMessage(MessageViewModel message, bool reply)
             {

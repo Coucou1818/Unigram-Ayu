@@ -165,6 +165,7 @@ namespace Telegram.Controls.Messages
         private MessageTextBlock Message;
         private Border Media;
         private MessageFooter Footer;
+        private Border DeletedBadge;
 
         // Lazy loaded
         private ProfilePicture Photo;
@@ -212,6 +213,7 @@ namespace Telegram.Controls.Messages
             Message = GetTemplateChild(nameof(Message)) as MessageTextBlock;
             Media = GetTemplateChild(nameof(Media)) as Border;
             Footer = GetTemplateChild(nameof(Footer)) as MessageFooter;
+            DeletedBadge = GetTemplateChild(nameof(DeletedBadge)) as Border;
 
             UpdateContentPanelState();
 
@@ -296,12 +298,17 @@ namespace Telegram.Controls.Messages
 
                 UpdateAttach(message);
 
-                // [PrismGram/AyuGram] 动态响应消息被撤回半透明视觉渲染
+                // [PrismGram/AyuGram] 动态响应消息被撤回半透明视觉渲染与红色垃圾箱角标
                 var targetOpacity = message.DeletedOpacity;
                 this.Opacity = targetOpacity;
                 if (ContentPanel != null)
                 {
                     ContentPanel.Opacity = targetOpacity;
+                }
+
+                if (DeletedBadge != null)
+                {
+                    DeletedBadge.Visibility = message.IsDeleted ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
 
@@ -2210,7 +2217,7 @@ namespace Telegram.Controls.Messages
             var styledText = processedText switch
             {
                 MessageTranslateResultSummary summary => summary.Text,
-                MessageTranslateResultText translated => message.Delegate?.IsTranslating ?? false
+                MessageTranslateResultText translated => (message.Delegate?.IsTranslating ?? true)
                     ? translated.Text
                     : message.Text,
                 _ => message.Text

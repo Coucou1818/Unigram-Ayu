@@ -929,6 +929,13 @@ namespace Telegram.ViewModels
 
                             if (deleted > 0 && deleted == album.Messages.Count)
                             {
+                                if (Telegram.Services.Ayu.AyuSettings.Current.SaveDeletedMessages)
+                                {
+                                    Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(message.ChatId, message.Id);
+                                    Handle(message, bubble => bubble.UpdateMessage(message), service => service.UpdateMessage(message));
+                                    continue;
+                                }
+
                                 _groupedMessages.TryRemove(message.MediaAlbumId, out _);
 
                                 message.AnimationState = MessageAnimationState.Removed;
@@ -939,6 +946,20 @@ namespace Telegram.ViewModels
                             }
                             else if (deleted > 0)
                             {
+                                if (Telegram.Services.Ayu.AyuSettings.Current.SaveDeletedMessages)
+                                {
+                                    foreach (var subMsg in album.Messages)
+                                    {
+                                        if (table.Contains(subMsg.Id))
+                                        {
+                                            Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(message.ChatId, subMsg.Id);
+                                        }
+                                    }
+                                    Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(message.ChatId, message.Id);
+                                    Handle(message, bubble => bubble.UpdateMessage(message), service => service.UpdateMessage(message));
+                                    continue;
+                                }
+
                                 for (int k = album.Messages.Count - 1; k >= 0; k--)
                                 {
                                     if (table.Contains(album.Messages[k].Id))
@@ -955,7 +976,7 @@ namespace Telegram.ViewModels
 
                         if (message.ChatId == update.ChatId && table.Contains(message.Id))
                         {
-                            // [PrismGram/AyuGram] 防撤回：若开启保存被撤回消息，不从 Items 集合移除，原地标记并刷新半透明与扫帚图标
+                            // [PrismGram/AyuGram] 防撤回：若开启保存被撤回消息，不从 Items 集合移除，原地标记并刷新半透明与角标
                             if (Telegram.Services.Ayu.AyuSettings.Current.SaveDeletedMessages)
                             {
                                 Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(message.ChatId, message.Id);

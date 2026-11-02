@@ -184,7 +184,12 @@ namespace Telegram.Services
 
         public bool Translate(MessageViewModel message, string toLanguage)
         {
-            if (message.IsOutgoing || string.IsNullOrEmpty(message.Text?.Text))
+            if (Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider == Telegram.Services.Ayu.AyuTranslationProvider.Telegram && message.IsOutgoing)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(message.Text?.Text))
             {
                 return false;
             }
@@ -215,12 +220,12 @@ namespace Telegram.Services
                 text = message.Text.Text;
             }
 
-            if (CanTranslateText(text, true))
+            var currentProvider = Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider;
+            if (currentProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram || CanTranslateText(text, true))
             {
                 message.TranslatedText = new MessageTranslateResultPending();
 
                 // [PrismGram/AyuGram] 自定义翻译引擎分支 (Google, Yandex, 微软, OpenAI 兼容)
-                var currentProvider = Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider;
                 if (currentProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram)
                 {
                     _translations[key] = new TranslatedMessage(toLanguage, null);
@@ -244,11 +249,8 @@ namespace Telegram.Services
 
                             _translations[key] = new TranslatedMessage(toLanguage, customResult);
 
-                            if (message.TranslatedText is MessageTranslateResultPending)
-                            {
-                                message.TranslatedText = customResult;
-                                Aggregator.Publish(new UpdateMessageTranslatedText(message.ChatId, message.Id, customResult));
-                            }
+                            message.TranslatedText = customResult;
+                            Aggregator.Publish(new UpdateMessageTranslatedText(message.ChatId, message.Id, customResult));
                         }
                         catch
                         {
