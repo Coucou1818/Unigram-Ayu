@@ -49,6 +49,12 @@ jobs:
           "@
           Set-Content -Path "Telegram/Constants.Secret.cs" -Value $content
 
+      - name: Download td_api.tl schema
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "Libraries/tdjson"
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/tdlib/td/master/td/generate/scheme/td_api.tl" -OutFile "Libraries/tdjson/td_api.tl"
+
       - name: Build Modern Release Package
         shell: pwsh
         run: |
