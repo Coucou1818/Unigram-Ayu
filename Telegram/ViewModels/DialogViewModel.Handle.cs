@@ -955,6 +955,18 @@ namespace Telegram.ViewModels
 
                         if (message.ChatId == update.ChatId && table.Contains(message.Id))
                         {
+                            // [PrismGram/AyuGram] 防撤回：若开启保存被撤回消息，不从 Items 集合移除，原地标记并刷新半透明与扫帚图标
+                            if (Telegram.Services.Ayu.AyuSettings.Current.SaveDeletedMessages)
+                            {
+                                Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(message.ChatId, message.Id);
+                                message.NotifyDeleted();
+                                Handle(message, bubble =>
+                                {
+                                    bubble.UpdateMessage(message);
+                                }, service => service.UpdateMessage(message));
+                                continue;
+                            }
+
                             message.AnimationState = MessageAnimationState.Removed;
 
                             toBeDeleted ??= new();

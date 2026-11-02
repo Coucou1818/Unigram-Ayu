@@ -1504,9 +1504,9 @@ namespace Telegram.Services
 
         public Settings.NotificationsSettings Notifications => _settings.Notifications;
 
-        public bool IsPremium => _options.IsPremium;
+        public bool IsPremium => _options.IsPremium || Telegram.Services.Ayu.AyuSettings.Current.LocalPremium;
 
-        public bool IsPremiumAvailable => _options.IsPremium || _options.IsPremiumAvailable;
+        public bool IsPremiumAvailable => _options.IsPremium || _options.IsPremiumAvailable || Telegram.Services.Ayu.AyuSettings.Current.LocalPremium;
 
         private long _localTicksAtSync;
         private long _serverTimeAtSync;

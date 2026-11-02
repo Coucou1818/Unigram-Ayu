@@ -30,7 +30,7 @@ namespace Telegram.ViewModels
 
         public bool IsLanguageDetected => _languageDetected != null && _languageDetected != "und";
 
-        public bool CanTranslate => _chat.IsTranslatable && TranslateService.CanTranslate(_languageDetected, true);
+        public bool CanTranslate => _chat.IsTranslatable && (TranslateService.CanTranslate(_languageDetected, true) || Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram);
 
         private bool _isTranslating;
         public bool IsTranslating
@@ -43,6 +43,12 @@ namespace Telegram.ViewModels
 
         private bool HasAutomaticTranslation()
         {
+            // [PrismGram/AyuGram] 解锁本地特权或使用第三方翻译引擎时，直接无门槛开启自动翻译横幅
+            if (Telegram.Services.Ayu.AyuSettings.Current.LocalPremium || Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram)
+            {
+                return true;
+            }
+
             if (ClientService.IsPremium || _hasAutomaticTranslation == true)
             {
                 return true;

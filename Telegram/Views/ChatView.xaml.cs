@@ -5853,7 +5853,10 @@ namespace Telegram.Views
 
         public void UpdateChatIsTranslatable(Chat chat, string language)
         {
-            TranslateHeader.UpdateChatIsTranslatable(chat, language);
+            if (ViewModel.TranslateService.CanTranslate(ViewModel.DetectedLanguage, true) || Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram)
+            {
+                TranslateHeader.UpdateChatIsTranslatable(chat, language);
+            }
         }
 
         public void UpdateChatTitle(Chat chat)

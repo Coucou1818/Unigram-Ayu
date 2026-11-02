@@ -51,7 +51,7 @@ namespace Telegram.Controls.Chats
 
         public void UpdateChatIsTranslatable(Chat chat, string language)
         {
-            var canTranslate = ViewModel.CanTranslate;
+            var canTranslate = ViewModel.CanTranslate || Telegram.Services.Ayu.AyuSettings.Current.TranslationProvider != Telegram.Services.Ayu.AyuTranslationProvider.Telegram;
             if (canTranslate)
             {
                 TranslateTo.Text = string.Format(Strings.TranslateToButton, TranslateService.LanguageName(ViewModel.Settings.Translate.To));
@@ -65,10 +65,8 @@ namespace Telegram.Controls.Chats
                     : Visibility.Visible;
             }
 
-            if (language != null || !chat.IsTranslatable)
-            {
-                ShowHide(canTranslate);
-            }
+            // [PrismGram/AyuGram] 强制显示翻译横幅栏
+            ShowHide(canTranslate);
         }
 
         private SlidePanel.SlideState _collapsed;
