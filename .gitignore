@@ -293,6 +293,8 @@ _Pvt_Extensions
 # output rules above would otherwise swallow.
 !/Libraries/tlottie/lib/x64/
 !/Libraries/tlottie/lib/ARM64/
+!/Libraries/wallet-engine/x64/
+!/Libraries/wallet-engine/ARM64/
 
 # Markdown is not committed here, and nor is anything in notes/: notes go to a separate private
 # repository. Ignoring a file does not untrack it, so the public docs already in the repository
