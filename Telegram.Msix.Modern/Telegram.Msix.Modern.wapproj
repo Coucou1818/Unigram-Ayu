@@ -105,7 +105,7 @@
          have one each - and without it a tester's crash cannot be symbolicated at all, which is
          what happened to 12.10.0.13967. The ILC pdb is ~300 MB, against ~180 MB for the .NET
          Native symbol package, and that is simply the price of being able to read the reports. -->
-    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>

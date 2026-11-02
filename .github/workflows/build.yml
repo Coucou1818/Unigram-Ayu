@@ -78,4 +78,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Unigram-PrismAyu-Package
-          path: Telegram/AppPackages/**/*.msixbundle
+          path: |
+            Telegram.Msix.Modern/AppPackages/**/*.msixbundle
+            Telegram.Msix.Modern/AppPackages/**/*.msix
+            Telegram/AppPackages/**/*.msixbundle
+            Telegram/AppPackages/**/*.msix

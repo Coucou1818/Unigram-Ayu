@@ -156,6 +156,7 @@ Invoke-MSBuild -Description "Telegram.Msix.Modern ($Configuration|$bundlePlatfor
       "-p:ModernPackageBuildMode=$Mode",
       "-p:AppxBundlePlatforms=$bundlePlatforms",
       '-p:AppxBundle=Always',
+      '-p:AppxSymbolPackageEnabled=False',
       '-p:AppxPackageSigningEnabled=True',
       "-p:ModernIdentity=$Identity") + $instrumentation + $common)
 
