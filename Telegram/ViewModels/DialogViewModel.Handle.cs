@@ -959,7 +959,6 @@ namespace Telegram.ViewModels
                             if (Telegram.Services.Ayu.AyuSettings.Current.SaveDeletedMessages)
                             {
                                 Telegram.Services.Ayu.AyuMessageTracker.MarkDeleted(message.ChatId, message.Id);
-                                message.NotifyDeleted();
                                 Handle(message, bubble =>
                                 {
                                     bubble.UpdateMessage(message);

@@ -85,13 +85,6 @@ namespace Telegram.ViewModels
 
         public bool IsDeleted => Telegram.Services.Ayu.AyuMessageTracker.IsMessageDeleted(ChatId, Id);
 
-        // [PrismGram/AyuGram] 消息被删除状态修改通知
-        public void NotifyDeleted()
-        {
-            RaisePropertyChanged(nameof(IsDeleted));
-            RaisePropertyChanged(nameof(DeletedOpacity));
-        }
-
         // [PrismGram/AyuGram] 气泡半透明度（被撤回消息透明度）
         public double DeletedOpacity => (IsDeleted && Telegram.Services.Ayu.AyuSettings.Current.SemiTransparentDeletedMessages) ? 0.65 : 1.0;
 
