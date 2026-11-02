@@ -40,8 +40,8 @@ jobs:
               {
                   static Constants()
                   {
-                      ApiId = 2496;
-                      ApiHash = "8da85b0d5b160236f12d7352725501ea";
+                      ApiId = 2040;
+                      ApiHash = "b18441a1ff607e10a989891a5462e627";
                       AppChannel = "unigramapp";
                   }
               }
