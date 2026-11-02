@@ -4580,14 +4580,16 @@ namespace Telegram.Services
                     UpdateForumTopic(updateMessageSendFailed.Message.ChatId, false, manager => manager.UpdateMessageSendFailed(updateMessageSendFailed.Message, updateMessageSendFailed.OldMessageId, updateMessageSendFailed.Error));
                     break;
                 case UpdateMessageContent updateMessageContent:
-                    // [PrismGram/AyuGram] 消息编辑历史追踪：记录编辑前的内容
+                    // [PrismGram/AyuGram] 消息编辑历史追踪：通过 TDLib 异步抓取或由 ForumTopicService 维护
                     if (Telegram.Services.Ayu.AyuSettings.Current.SaveMessagesHistory)
                     {
-                        var oldMsg = GetMessage(updateMessageContent.ChatId, updateMessageContent.MessageId);
-                        if (oldMsg != null && oldMsg.Content != null)
+                        Send(new GetMessage(updateMessageContent.ChatId, updateMessageContent.MessageId), response =>
                         {
-                            Telegram.Services.Ayu.AyuMessageTracker.RecordEdit(updateMessageContent.ChatId, updateMessageContent.MessageId, oldMsg.EditDate, oldMsg.Content);
-                        }
+                            if (response is Message oldMsg && oldMsg.Content != null)
+                            {
+                                Telegram.Services.Ayu.AyuMessageTracker.RecordEdit(updateMessageContent.ChatId, updateMessageContent.MessageId, oldMsg.EditDate, oldMsg.Content);
+                            }
+                        });
                     }
                     UpdateForumTopic(updateMessageContent.ChatId, false, manager => manager.UpdateMessageContent(updateMessageContent.MessageId, updateMessageContent.NewContent));
                     break;

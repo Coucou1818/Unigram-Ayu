@@ -239,14 +239,11 @@ namespace Telegram.Services
 
                             _translations[key] = new TranslatedMessage(toLanguage, customResult);
 
-                            Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
-                                Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                                {
-                                    if (message.TranslatedText is MessageTranslateResultPending)
-                                    {
-                                        message.TranslatedText = customResult;
-                                    }
-                                });
+                            if (message.TranslatedText is MessageTranslateResultPending)
+                            {
+                                message.TranslatedText = customResult;
+                                Aggregator.Publish(new UpdateMessageTranslatedText(message.ChatId, message.Id, customResult));
+                            }
                         }
                         catch
                         {
