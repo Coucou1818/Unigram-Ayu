@@ -26,5 +26,11 @@ namespace Telegram.Views.Settings
         {
             this.InitializeComponent();
         }
+
+        private void ClearData_Click(object sender, RoutedEventArgs e)
+        {
+            AyuMessageTracker.ClearAllAyuData();
+            Common.ToastPopup.Show(this.XamlRoot, "已清空本地防撤回与已缓存追踪数据！", Common.ToastPopupIcon.Success);
+        }
     }
 }

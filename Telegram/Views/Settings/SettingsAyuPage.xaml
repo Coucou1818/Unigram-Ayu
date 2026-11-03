@@ -51,6 +51,9 @@
                     <CheckBox Content="保存并实时记录最后上线时间 (Save Last Online Time - 突破对方隐藏)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.SaveLastOnlineTime, Mode=TwoWay}" />
+                    <controls:SettingsButton Content="清空本地防撤回与追踪数据库"
+                                             Description="彻底抹除本地保存的所有被撤回消息缓存与历史追踪记录"
+                                             Click="ClearData_Click" />
                 </controls:HeaderedControl>
 
                 <!-- 3. 本地大会员与特权增强 -->

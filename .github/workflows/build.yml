@@ -121,11 +121,11 @@ jobs:
           Source: "$appMain\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
           [Icons]
-          Name: "{autoprograms}\Unigram PrismGram+"; Filename: "{app}\Telegram.Modern\Telegram.exe"
-          Name: "{autodesktop}\Unigram PrismGram+"; Filename: "{app}\Telegram.Modern\Telegram.exe"
+          Name: "{autoprograms}\Unigram PrismGram+"; Filename: "explorer.exe"; Parameters: "shell:AppsFolder\38833FF26BA1D.UnigramNet10Bundle_g9c9v27vpyspw!App"; IconFilename: "{app}\Assets\Logos\Square44x44Logo.targetsize-256.png"
+          Name: "{autodesktop}\Unigram PrismGram+"; Filename: "explorer.exe"; Parameters: "shell:AppsFolder\38833FF26BA1D.UnigramNet10Bundle_g9c9v27vpyspw!App"; IconFilename: "{app}\Assets\Logos\Square44x44Logo.targetsize-256.png"
 
           [Run]
-          Filename: "{app}\Telegram.Modern\Telegram.exe"; Description: "运行 Unigram PrismGram+"; Flags: nowait postinstall skipifsilent
+          Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -Command \"Add-AppxPackage -Register '{app}\AppxManifest.xml'; Start-Process 'explorer.exe' 'shell:AppsFolder\38833FF26BA1D.UnigramNet10Bundle_g9c9v27vpyspw!App'\""; Description: "运行 Unigram PrismGram+"; Flags: nowait postinstall skipifsilent
           "@
           Set-Content -Path "setup.iss" -Value $issContent
 

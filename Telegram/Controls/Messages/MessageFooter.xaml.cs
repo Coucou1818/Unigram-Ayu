@@ -332,10 +332,10 @@ namespace Telegram.Controls.Messages
                 _dateLabel = string.Empty;
             }
 
-            // [PrismGram/AyuGram] 被撤回消息显示专属红色垃圾箱标记 (例如 🗑 12:34)
+            // [PrismGram/AyuGram] 被撤回消息仅右上角保留红色小垃圾桶角标，时间戳不再混排垃圾桶图标
             if (message.IsDeleted)
             {
-                _dateLabel = $"🗑 {_dateLabel}".Trim();
+                // 保留纯净时间戳
             }
         }
 
