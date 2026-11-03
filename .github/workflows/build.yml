@@ -79,21 +79,23 @@ jobs:
         run: |
           Write-Host "Locating makeappx.exe..."
           $makeappx = (Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter "makeappx.exe" | Where-Object { $_.FullName -like "*\x64\*" } | Select-Object -First 1).FullName
-          if (-not $makeappx) {
-              $makeappx = (Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter "makeappx.exe" | Select-Object -First 1).FullName
-          }
           Write-Host "Using makeappx: $makeappx"
 
-          $msix = Get-ChildItem -Path "Telegram.Msix.Modern/AppPackages" -Recurse -Filter "*_x64.msix" | Select-Object -First 1
-          if (-not $msix) {
-              $msix = Get-ChildItem -Path "Telegram/AppPackages" -Recurse -Filter "*_x64.msix" | Select-Object -First 1
-          }
-          Write-Host "Found MSIX: $($msix.FullName)"
+          $bundle = (Get-ChildItem -Path "Telegram.Msix.Modern/AppPackages" -Recurse -Filter "*.msixbundle" | Select-Object -First 1).FullName
+          Write-Host "Found bundle: $bundle"
 
-          $unpackDir = "C:\UnpackApp"
-          if (Test-Path $unpackDir) { Remove-Item $unpackDir -Recurse -Force }
-          New-Item -ItemType Directory -Force -Path $unpackDir
-          & $makeappx unpack /p $msix.FullName /d $unpackDir /o
+          $bundleUnpack = "C:\BundleUnpack"
+          if (Test-Path $bundleUnpack) { Remove-Item $bundleUnpack -Recurse -Force }
+          New-Item -ItemType Directory -Force -Path $bundleUnpack
+          & $makeappx unbundle /p $bundle /d $bundleUnpack /o
+
+          $mainMsix = (Get-ChildItem -Path $bundleUnpack -Filter "*_x64.msix" | Select-Object -First 1).FullName
+          Write-Host "Found main msix: $mainMsix"
+
+          $appMain = "C:\AppMain"
+          if (Test-Path $appMain) { Remove-Item $appMain -Recurse -Force }
+          New-Item -ItemType Directory -Force -Path $appMain
+          & $makeappx unpack /p $mainMsix /d $appMain /o
 
           $iscc = (Get-ChildItem -Path "C:\Program Files (x86)" -Recurse -Filter "ISCC.exe" -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
           if (-not $iscc) {
@@ -116,7 +118,7 @@ jobs:
           PrivilegesRequired=lowest
 
           [Files]
-          Source: "$unpackDir\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+          Source: "$appMain\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
           [Icons]
           Name: "{autoprograms}\Unigram PrismGram+"; Filename: "{app}\Telegram.Modern\Telegram.exe"
