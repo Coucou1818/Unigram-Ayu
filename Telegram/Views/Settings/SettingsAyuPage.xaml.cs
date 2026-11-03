@@ -3,6 +3,7 @@
 // Distributed under the GNU General Public License v3.0.
 //
 
+using Telegram.Controls;
 using Telegram.Services.Ayu;
 #if WINUI
 using Microsoft.UI.Xaml;
@@ -32,7 +33,7 @@ namespace Telegram.Views.Settings
         private void ClearData_Click(object sender, RoutedEventArgs e)
         {
             AyuMessageTracker.ClearAllAyuData();
-            Common.ToastPopup.Show(this.XamlRoot, "已清空本地防撤回与已缓存追踪数据！", Common.ToastPopupIcon.Success);
+            ToastPopup.Show(this.XamlRoot, "已清空本地防撤回与已缓存追踪数据！", ToastPopupIcon.Success);
         }
     }
 }

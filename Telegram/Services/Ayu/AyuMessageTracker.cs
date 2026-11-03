@@ -49,9 +49,9 @@ namespace Telegram.Services.Ayu
                 Directory.CreateDirectory(folder);
                 _dbPath = Path.Combine(folder, "deleted_messages.json");
 
-                if (File.Exists(_dbPath))
+                if (System.IO.File.Exists(_dbPath))
                 {
-                    var json = File.ReadAllText(_dbPath);
+                    var json = System.IO.File.ReadAllText(_dbPath);
                     var list = JsonSerializer.Deserialize<List<DeletedMessageRecord>>(json);
                     if (list != null)
                     {
@@ -76,7 +76,7 @@ namespace Telegram.Services.Ayu
                     allRecords.AddRange(pair.Value.Values);
                 }
                 var json = JsonSerializer.Serialize(allRecords);
-                File.WriteAllText(_dbPath, json);
+                System.IO.File.WriteAllText(_dbPath, json);
             }
             catch { }
         }
@@ -88,9 +88,9 @@ namespace Telegram.Services.Ayu
             _lastOnlineTimes.Clear();
             try
             {
-                if (File.Exists(_dbPath))
+                if (System.IO.File.Exists(_dbPath))
                 {
-                    File.Delete(_dbPath);
+                    System.IO.File.Delete(_dbPath);
                 }
             }
             catch { }
