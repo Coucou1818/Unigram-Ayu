@@ -77,9 +77,13 @@ jobs:
       - name: Build Windows Setup EXE (Inno Setup)
         shell: pwsh
         run: |
-          Write-Host "Installing Inno Setup via choco..."
-          choco install innosetup --yes --no-progress
-          
+          Write-Host "Locating makeappx.exe..."
+          $makeappx = (Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter "makeappx.exe" | Where-Object { $_.FullName -like "*\x64\*" } | Select-Object -First 1).FullName
+          if (-not $makeappx) {
+              $makeappx = (Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter "makeappx.exe" | Select-Object -First 1).FullName
+          }
+          Write-Host "Using makeappx: $makeappx"
+
           $msix = Get-ChildItem -Path "Telegram.Msix.Modern/AppPackages" -Recurse -Filter "*_x64.msix" | Select-Object -First 1
           if (-not $msix) {
               $msix = Get-ChildItem -Path "Telegram/AppPackages" -Recurse -Filter "*_x64.msix" | Select-Object -First 1
@@ -87,9 +91,15 @@ jobs:
           Write-Host "Found MSIX: $($msix.FullName)"
 
           $unpackDir = "C:\UnpackApp"
+          if (Test-Path $unpackDir) { Remove-Item $unpackDir -Recurse -Force }
           New-Item -ItemType Directory -Force -Path $unpackDir
-          $makeappx = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makeappx.exe"
           & $makeappx unpack /p $msix.FullName /d $unpackDir /o
+
+          $iscc = (Get-ChildItem -Path "C:\Program Files (x86)" -Recurse -Filter "ISCC.exe" -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
+          if (-not $iscc) {
+              $iscc = (Get-ChildItem -Path "C:\Program Files" -Recurse -Filter "ISCC.exe" -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
+          }
+          Write-Host "Using ISCC: $iscc"
 
           $issContent = @"
           [Setup]
@@ -117,7 +127,7 @@ jobs:
           "@
           Set-Content -Path "setup.iss" -Value $issContent
 
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
+          & $iscc setup.iss
           Write-Host "Setup EXE build complete: Unigram_PrismAyu_Setup_x64.exe"
 
       - name: Upload Artifacts
