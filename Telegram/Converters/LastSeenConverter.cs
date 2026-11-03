@@ -113,6 +113,15 @@ namespace Telegram.Converters
             }
             else if (user.Status is UserStatusRecently)
             {
+                // [PrismGram/AyuGram] 针对隐藏了最后上线时间的用户，若本地已记录到真实时间，则优先展示
+                if (Telegram.Services.Ayu.AyuSettings.Current.SaveLastOnlineTime)
+                {
+                    var savedTime = Telegram.Services.Ayu.AyuMessageTracker.GetLastOnline(user.Id);
+                    if (savedTime > 0)
+                    {
+                        return $"{Strings.Lately} ({FormatDateOnline(savedTime, relative)})";
+                    }
+                }
                 return Strings.Lately;
             }
             else if (user.Status is UserStatusLastWeek)

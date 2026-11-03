@@ -157,6 +157,42 @@ namespace Telegram.Services.Ayu
             set => SetValue(nameof(StickerConfirmation), value);
         }
 
+        // --- 5. 新增功能特性 (New Ayugram Features) ---
+        // 消息过滤 (屏蔽 Zalgo 乱码、屏蔽特定消息)
+        public bool FilterZalgo
+        {
+            get => GetValue(nameof(FilterZalgo), true);
+            set => SetValue(nameof(FilterZalgo), value);
+        }
+
+        // 屏蔽打开链接警告弹窗
+        public bool DisableOpenLinkWarning
+        {
+            get => GetValue(nameof(DisableOpenLinkWarning), true);
+            set => SetValue(nameof(DisableOpenLinkWarning), value);
+        }
+
+        // 屏蔽类似频道推荐
+        public bool DisableSimilarChannels
+        {
+            get => GetValue(nameof(DisableSimilarChannels), true);
+            set => SetValue(nameof(DisableSimilarChannels), value);
+        }
+
+        // 保存并记录最后上线时间
+        public bool SaveLastOnlineTime
+        {
+            get => GetValue(nameof(SaveLastOnlineTime), true);
+            set => SetValue(nameof(SaveLastOnlineTime), value);
+        }
+
+        // 显示用户/群组 ID 及 DC 数据中心与注册时间
+        public bool ShowPeerDetails
+        {
+            get => GetValue(nameof(ShowPeerDetails), true);
+            set => SetValue(nameof(ShowPeerDetails), value);
+        }
+
         // --- 内部持久化辅助方法 ---
         private T GetValue<T>(string key, T defaultValue)
         {

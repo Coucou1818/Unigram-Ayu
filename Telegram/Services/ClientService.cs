@@ -4383,6 +4383,19 @@ namespace Telegram.Services
                         if (_users.TryGetValue(updateUserStatus.UserId, out User value))
                         {
                             value.Status = updateUserStatus.Status;
+
+                            // [PrismGram/AyuGram] 实时拦截记录用户的真实上线时间
+                            if (Telegram.Services.Ayu.AyuSettings.Current.SaveLastOnlineTime)
+                            {
+                                if (updateUserStatus.Status is UserStatusOnline online)
+                                {
+                                    Telegram.Services.Ayu.AyuMessageTracker.RecordLastOnline(updateUserStatus.UserId, online.Expires);
+                                }
+                                else if (updateUserStatus.Status is UserStatusOffline offline)
+                                {
+                                    Telegram.Services.Ayu.AyuMessageTracker.RecordLastOnline(updateUserStatus.UserId, offline.WasOnline);
+                                }
+                            }
                         }
 
                         break;

@@ -250,6 +250,14 @@ namespace Telegram.Views
             Title.Text = user.FullName();
             Photo.Source = ProfilePictureSource.User(ViewModel.ClientService, user);
             Identity.SetStatus(ViewModel.ClientService, user, BotVerified);
+
+            // [PrismGram/AyuGram] 设置页展示用户的 Telegram ID、DC 数据中心及预估注册年份
+            if (Telegram.Services.Ayu.AyuSettings.Current.ShowPeerDetails)
+            {
+                var estimate = Telegram.Services.Ayu.AyuMessageTracker.GetUserCreationEstimate(user.Id);
+                var dcText = estimate.DcId > 0 ? $"DC{estimate.DcId}" : "未知DC";
+                Subtitle.Text = $"ID: {user.Id} • {dcText} • 注册: {estimate.DateEstimate}";
+            }
         }
 
         public void UpdateUserStatus(Chat chat, User user)

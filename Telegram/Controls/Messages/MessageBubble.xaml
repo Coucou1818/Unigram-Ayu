@@ -248,32 +248,26 @@
                                                      Grid.Row="4" />
                             </local:MessageBubblePanel>
 
-                            <!-- [PrismGram/AyuGram] 红色垃圾箱撤回角标 -->
+                            <!-- [PrismGram/AyuGram] 红色垃圾箱撤回角标 (精简为纯小垃圾桶图标，无文本) -->
                             <Border x:Name="DeletedBadge"
-                                    Background="#33FF3B30"
+                                    Background="#22FF3B30"
                                     BorderBrush="#FFFF3B30"
                                     BorderThickness="1"
-                                    CornerRadius="4"
-                                    Padding="4,1,4,1"
-                                    Margin="0,4,8,0"
+                                    CornerRadius="3"
+                                    Padding="3,2,3,2"
+                                    Margin="0,2,4,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Visibility="Collapsed"
                                     Canvas.ZIndex="100"
                                     Grid.Column="1"
                                     Grid.Row="1">
-                                <StackPanel Orientation="Horizontal" Spacing="3">
-                                    <TextBlock Text="&#xE74D;"
-                                               FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                               FontSize="11"
-                                               Foreground="#FFFF3B30"
-                                               VerticalAlignment="Center" />
-                                    <TextBlock Text="已撤回"
-                                               FontSize="10"
-                                               Foreground="#FFFF3B30"
-                                               FontWeight="SemiBold"
-                                               VerticalAlignment="Center" />
-                                </StackPanel>
+                                <TextBlock Text="&#xE74D;"
+                                           FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                           FontSize="10"
+                                           Foreground="#FFFF3B30"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
                             </Border>
 
                             <Grid x:Name="Header"

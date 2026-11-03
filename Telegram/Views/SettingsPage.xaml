@@ -261,6 +261,15 @@
                             </Setter>
                         </Style>
                     </controls:TopNavView.ItemContainerStyle>
+                    <!-- [PrismGram/AyuGram] 专属核心设置排在最前并高亮 -->
+                    <controls:SettingsButton x:Name="PrismAyu"
+                                             Click="PrismAyu_Click"
+                                             Content="PrismGram 设置"
+                                             Style="{StaticResource IconBadgeButtonStyle}">
+                        <controls:SettingsButton.IconSource>
+                            <icons:Premium />
+                        </controls:SettingsButton.IconSource>
+                    </controls:SettingsButton>
                     <controls:SettingsButton x:Name="Profile"
                                              Content="{CustomResource MyProfile}"
                                              Style="{StaticResource IconBadgeButtonStyle}"
@@ -339,15 +348,6 @@
                                              Style="{StaticResource IconBadgeButtonStyle}">
                         <controls:SettingsButton.IconSource>
                             <icons:Advanced />
-                        </controls:SettingsButton.IconSource>
-                    </controls:SettingsButton>
-                    <!-- [PrismGram/AyuGram] 移植专有设置入口 -->
-                    <controls:SettingsButton x:Name="PrismAyu"
-                                             Click="PrismAyu_Click"
-                                             Content="Prism / Ayu 设置"
-                                             Style="{StaticResource IconBadgeButtonStyle}">
-                        <controls:SettingsButton.IconSource>
-                            <icons:Premium />
                         </controls:SettingsButton.IconSource>
                     </controls:SettingsButton>
                 </controls:TopNavView>

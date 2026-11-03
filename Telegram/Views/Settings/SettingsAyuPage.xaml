@@ -13,62 +13,87 @@
             <StackPanel Spacing="16" MaxWidth="720" HorizontalAlignment="Stretch">
 
                 <!-- 页面主标题 -->
-                <TextBlock Text="Prism / Ayu 增强功能" Style="{StaticResource TitleTextBlockStyle}" FontWeight="SemiBold" Margin="0,8,0,8" />
+                <TextBlock Text="PrismGram+ 增强功能设置" Style="{StaticResource TitleTextBlockStyle}" FontWeight="SemiBold" Margin="0,8,0,8" />
 
-                <!-- 1. 幽灵模式卡片组 -->
-                <controls:HeaderedControl Header="幽灵模式 (Ghost Mode)">
-                    <CheckBox Content="开启全局隐身模式"
+                <!-- 1. 幽灵模式核心特性 -->
+                <controls:HeaderedControl Header="幽灵模式 (Ghost essentials)">
+                    <CheckBox Content="开启全局幽灵模式 (Ghost Mode)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.GhostModeActive, Mode=TwoWay}" />
-                    <CheckBox Content="发送消息已读确认 (关闭后阅读消息不留双勾)"
+                    <CheckBox Content="互动时自动标记已读 (Read on Interact - 发送消息或表情时标记已读)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.MarkReadAfterAction, Mode=TwoWay}" />
+                    <CheckBox Content="上报消息已读确认 (关闭后看消息绝不给对方双勾)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.SendReadMessages, Mode=TwoWay}" />
-                    <CheckBox Content="无痕浏览故事 (关闭后查看他人动态不留访客记录)"
+                    <CheckBox Content="上报故事动态浏览 (Story Ghost Mode - 无痕查看动态不留访客记录)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.SendReadStories, Mode=TwoWay}" />
-                    <CheckBox Content="广播在线状态 (关闭后保持最近上线时间)"
+                    <CheckBox Content="上报实时在线数据包 (关闭后对外隐匿在线状态)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.SendOnlinePackets, Mode=TwoWay}" />
-                    <CheckBox Content="广播正在输入状态 (关闭后打字上传不提示对方)"
+                    <CheckBox Content="上报正在输入与上传进度 (关闭后对方看不到“正在输入...“)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.SendUploadProgress, Mode=TwoWay}" />
                 </controls:HeaderedControl>
 
-                <!-- 2. 防撤回与编辑记录卡片组 -->
-                <controls:HeaderedControl Header="防撤回与历史追踪 (Anti-Recall)">
-                    <CheckBox Content="保存被撤回的消息"
+                <!-- 2. 间谍模式：防撤回与历史追踪 -->
+                <controls:HeaderedControl Header="防撤回与历史追踪 (Spy essentials)">
+                    <CheckBox Content="保存被撤回的消息 (Save Deleted Messages)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.SaveDeletedMessages, Mode=TwoWay}" />
-                    <CheckBox Content="被撤回消息半透明显示 (以 65% 半透明突出区分)"
-                              Style="{StaticResource SettingsCheckBoxStyle}"
-                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.SemiTransparentDeletedMessages, Mode=TwoWay}" />
-                    <CheckBox Content="保存消息编辑历史记录 (查看修改前的原始版本)"
+                    <CheckBox Content="保存消息编辑历史 (Save Edits History - 记录修改前的内容)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.SaveMessagesHistory, Mode=TwoWay}" />
+                    <CheckBox Content="被撤回消息半透明显示 (以 55% 透明度突出区分)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.SemiTransparentDeletedMessages, Mode=TwoWay}" />
+                    <CheckBox Content="保存并实时记录最后上线时间 (Save Last Online Time - 突破对方隐藏)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.SaveLastOnlineTime, Mode=TwoWay}" />
                 </controls:HeaderedControl>
 
-                <!-- 3. 本地会员特权与去广告 -->
-                <controls:HeaderedControl Header="本地特权与界面净化 (Privileges)">
-                    <CheckBox Content="解锁本地 Premium 特权 (本地解锁大贴纸与表情特权)"
+                <!-- 3. 本地大会员与特权增强 -->
+                <controls:HeaderedControl Header="本地会员特权与去广告 (Other / Premium)">
+                    <CheckBox Content="解锁本地 Telegram Premium 大会员特权 (加速上传下载与贴纸特权)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.LocalPremium, Mode=TwoWay}" />
-                    <CheckBox Content="屏蔽频道赞助广告 (彻底过滤底部广告推荐)"
+                    <CheckBox Content="彻底过滤频道赞助商广告 (Disable Ads)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.DisableAds, Mode=TwoWay}" />
-                    <CheckBox Content="主播隐私防窥模式 (模糊隐藏手机号与内部 ID)"
+                    <CheckBox Content="显示账号详细信息 (Show Peer ID • 包含 DC 数据中心与注册时间)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.ShowPeerDetails, Mode=TwoWay}" />
+                </controls:HeaderedControl>
+
+                <!-- 4. 消息过滤与通用净化 -->
+                <controls:HeaderedControl Header="通用设置与消息过滤 (General)">
+                    <CheckBox Content="过滤 Zalgo 乱码与字符炸弹 (Filter Zalgo)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.FilterZalgo, Mode=TwoWay}" />
+                    <CheckBox Content="屏蔽打开链接安全警告弹窗 (Disable Open Link Warning)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.DisableOpenLinkWarning, Mode=TwoWay}" />
+                    <CheckBox Content="屏蔽类似频道推荐 (Disable Similar Channels)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.DisableSimilarChannels, Mode=TwoWay}" />
+                    <CheckBox Content="关闭故事动态展示 (Disable Stories)"
+                              Style="{StaticResource SettingsCheckBoxStyle}"
+                              common:ToggleHelper.IsChecked="{x:Bind ViewModel.DisableStories, Mode=TwoWay}" />
+                    <CheckBox Content="主播防窥模式 (Streamer Mode - 隐藏手机号与敏感信息)"
                               Style="{StaticResource SettingsCheckBoxStyle}"
                               common:ToggleHelper.IsChecked="{x:Bind ViewModel.StreamerMode, Mode=TwoWay}" />
                 </controls:HeaderedControl>
 
-                <!-- 4. 多引擎翻译增强 -->
-                <controls:HeaderedControl Header="消息翻译引擎 (Translation Provider)">
-                    <controls:SettingsButton Content="翻译服务提供商">
+                <!-- 5. 消息多引擎翻译设置 -->
+                <controls:HeaderedControl Header="翻译设置 (Translate)">
+                    <controls:SettingsButton Content="翻译服务提供商 (Translation Provider)">
                         <controls:SettingsButton.Badge>
-                            <ComboBox SelectedIndex="{x:Bind ProviderSelectedIndex, Mode=TwoWay}" Width="180">
+                            <ComboBox SelectedIndex="{x:Bind ProviderSelectedIndex, Mode=TwoWay}" Width="190">
                                 <ComboBoxItem Content="Telegram 官方" />
-                                <ComboBoxItem Content="Google 翻译 (免Key)" />
+                                <ComboBoxItem Content="Google 翻译 (内置高速端点)" />
                                 <ComboBoxItem Content="Yandex 翻译" />
-                                <ComboBoxItem Content="微软 Bing / Edge" />
+                                <ComboBoxItem Content="微软 Bing 翻译" />
                                 <ComboBoxItem Content="OpenAI 兼容接口" />
                             </ComboBox>
                         </controls:SettingsButton.Badge>
