@@ -74,11 +74,58 @@ jobs:
         run: |
           .\Build.Modern.ps1 -Platform x64 -Configuration Release -Mode SideloadOnly
 
+      - name: Build Windows Setup EXE (Inno Setup)
+        shell: pwsh
+        run: |
+          Write-Host "Installing Inno Setup via choco..."
+          choco install innosetup --yes --no-progress
+          
+          $msix = Get-ChildItem -Path "Telegram.Msix.Modern/AppPackages" -Recurse -Filter "*_x64.msix" | Select-Object -First 1
+          if (-not $msix) {
+              $msix = Get-ChildItem -Path "Telegram/AppPackages" -Recurse -Filter "*_x64.msix" | Select-Object -First 1
+          }
+          Write-Host "Found MSIX: $($msix.FullName)"
+
+          $unpackDir = "C:\UnpackApp"
+          New-Item -ItemType Directory -Force -Path $unpackDir
+          $makeappx = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makeappx.exe"
+          & $makeappx unpack /p $msix.FullName /d $unpackDir /o
+
+          $issContent = @"
+          [Setup]
+          AppName=Unigram PrismGram+
+          AppVersion=13.1.3.0
+          DefaultDirName={autopf}\UnigramPrismAyu
+          DefaultGroupName=Unigram PrismGram+
+          OutputDir=.
+          OutputBaseFilename=Unigram_PrismAyu_Setup_x64
+          Compression=lzma2/ultra64
+          SolidCompression=yes
+          ArchitecturesInstallIn64BitMode=x64
+          DisableProgramGroupPage=yes
+          PrivilegesRequired=lowest
+
+          [Files]
+          Source: "$unpackDir\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+          [Icons]
+          Name: "{autoprograms}\Unigram PrismGram+"; Filename: "{app}\Telegram.Modern\Telegram.exe"
+          Name: "{autodesktop}\Unigram PrismGram+"; Filename: "{app}\Telegram.Modern\Telegram.exe"
+
+          [Run]
+          Filename: "{app}\Telegram.Modern\Telegram.exe"; Description: "运行 Unigram PrismGram+"; Flags: nowait postinstall skipifsilent
+          "@
+          Set-Content -Path "setup.iss" -Value $issContent
+
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
+          Write-Host "Setup EXE build complete: Unigram_PrismAyu_Setup_x64.exe"
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Unigram-PrismAyu-Package
           path: |
+            Unigram_PrismAyu_Setup_x64.exe
             Telegram.Msix.Modern/AppPackages/**/*.msixbundle
             Telegram.Msix.Modern/AppPackages/**/*.msix
             Telegram/AppPackages/**/*.msixbundle

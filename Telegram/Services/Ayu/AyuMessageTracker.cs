@@ -71,6 +71,19 @@ namespace Telegram.Services.Ayu
             }
         }
 
+        public static IReadOnlyList<EditHistoryRecord> GetEditHistory(long chatId, long messageId)
+        {
+            string key = $"{chatId}_{messageId}";
+            if (_editHistory.TryGetValue(key, out var list))
+            {
+                lock (list)
+                {
+                    return list.ToArray();
+                }
+            }
+            return Array.Empty<EditHistoryRecord>();
+        }
+
         // 缓存最后真实上线时间: UserId -> UnixTimestamp
         private static readonly ConcurrentDictionary<long, int> _lastOnlineTimes = new();
 
